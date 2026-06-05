@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just For You ?</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 500px; text-align: center; }
+        .option-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #ff9a9e; border-radius: 10px; background: white; cursor: pointer; transition: 0.3s; }
+        .option-btn:hover { background: #ff9a9e; color: white; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 10px; }
+        button#start-btn, button#submit-btn { background: #ff6f61; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="start-screen">
+    <h1>Hello! ??</h1>
+    <p>A little quiz just for you. What should I call you?</p>
+    <input type="text" id="name" placeholder="Your Name"><br>
+    <input type="number" id="age" placeholder="Your Age"><br>
+    <button id="start-btn" onclick="startQuiz()">Start Quiz ?</button>
+</div>
+
+<div class="card hidden" id="quiz-screen">
+    <h3 id="question-text"></h3>
+    <div id="options-container"></div>
+    <textarea id="desc-answer" class="hidden" rows="4" style="width:90%"></textarea><br>
+    <button id="submit-btn" class="hidden" onclick="nextQuestion()">Finish ??</button>
+</div>
+
+<script>
+    // 18 MCQs + 2 Descriptions
+    const quizData = [
+        { q: "1. Coffee or Tea?", options: ["Coffee", "Tea", "Neither", "Both"] },
+        { q: "2. Beach or Mountains?", options: ["Beach", "Mountains", "Forest", "City life"] },
+        { q: "3. Early bird or Night owl?", options: ["Early bird", "Night owl"] },
+        { q: "4. Travel with friends or solo?", options: ["Friends", "Solo", "Family"] },
+        { q: "5. Favorite season?", options: ["Monsoon", "Winter", "Summer", "Spring"] },
+        { q: "6. Movie night or Night out?", options: ["Movie night", "Night out"] },
+        { q: "7. Do you like gardening?", options: ["Love it", "It's okay", "Not my thing"] },
+        { q: "8. Sweet or Spicy food?", options: ["Sweet", "Spicy", "Both"] },
+        { q: "9. Are you a planner?", options: ["Yes, always", "Never", "Sometimes"] },
+        { q: "10. Books or Movies?", options: ["Books", "Movies"] },
+        { q: "11. Do you believe in soulmates?", options: ["Yes", "No", "Maybe"] },
+        { q: "12. Music genre?", options: ["Bollywood", "Pop", "Classical", "Rock"] },
+        { q: "13. Best day of the week?", options: ["Saturday", "Sunday", "Friday", "Weekday"] },
+        { q: "14. Pets?", options: ["Dogs", "Cats", "Birds", "None"] },
+        { q: "15. Shopping or saving?", options: ["Shopping", "Saving"] },
+        { q: "16. Sunrise or Sunset?", options: ["Sunrise", "Sunset"] },
+        { q: "17. Introvert or Extrovert?", options: ["Introvert", "Extrovert", "Ambivert"] },
+        { q: "18. How do you handle stress?", options: ["Talk to someone", "Sleep", "Listen to music", "Work it out"] },
+        { q: "19. Describe our friendship in one sentence:", type: "text" },
+        { q: "20. What is one thing you wish we could do together?", type: "text" }
+    ];
+
+    let currentQ = 0;
+    let answers = {};
+
+    function startQuiz() {
+        if(!document.getElementById('name').value) return alert("Please enter your name!");
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        let q = quizData[currentQ];
+        document.getElementById('question-text').innerText = q.q;
+        let container = document.getElementById('options-container');
+        container.innerHTML = "";
+
+        if (q.type === "text") {
+            document.getElementById('desc-answer').classList.remove('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+        } else {
+            q.options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => saveAndNext(opt);
+                container.appendChild(btn);
+            });
+        }
+    }
+
+    function saveAndNext(ans) {
+        answers[currentQ] = ans;
+        currentQ++;
+        if(currentQ < 18) {
+            showQuestion();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        answers[currentQ] = document.getElementById('desc-answer').value;
+        currentQ++;
+        if(currentQ < quizData.length) {
+            document.getElementById('desc-answer').value = "";
+            showQuestion();
+        } else {
+            document.getElementById('quiz-screen').innerHTML = "<h1>Thank you! ??</h1><p>Your answers mean a lot to me.</p>";
+            console.log("Final Answers:", answers);
+        }
+    }
+</script>
+</body>
+</html>
